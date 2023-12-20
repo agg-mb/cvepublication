@@ -52,7 +52,9 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
     // Generating the content
     todaysHighScoreVulnerabilities.forEach(vulnerability => {
         let referencesLinks = '';
-    
+        let description = (vulnerability.cve.descriptions.length > 0) ? vulnerability.cve.descriptions[0].value : "No description available";
+        let source = (vulnerability.cve.metrics.cvssMetricV31.length > 0) ? vulnerability.cve.metrics.cvssMetricV31[0].source : "No source available";
+
         // Check if the references field exists and has content
         if (vulnerability.cve.references && vulnerability.cve.references.length > 0) {
             vulnerability.cve.references.forEach(reference => {
@@ -63,13 +65,13 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
         }
     
         content += `
-            <div class="cve-entry">
-                <h2>${vulnerability.cve.id}</h2>
-                <p><strong>Source:</strong>${vulnerability.cve.metrics.cvssMetricV31.source}</p>
-                <p><strong>Published Date:</strong> ${vulnerability.cve.published}</p>
-                <p><strong>Description:</strong> ${vulnerability.cve.descriptions.value}</p>
-                <p><strong>References:</strong><br>${referencesLinks}</p>
-            </div>
+        <div class="cve-entry">
+            <h2>${vulnerability.cve.id}</h2>
+            <p><strong>Source:</strong>${source}</p>
+            <p><strong>Published Date:</strong> ${vulnerability.cve.published}</p>
+            <p><strong>Description:</strong> ${description}</p>
+            <p><strong>References:</strong><br>${referencesLinks}</p>
+        </div>
         `;
     });
     dashboard.innerHTML = content;
