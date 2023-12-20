@@ -23,9 +23,12 @@ const today = new Date();
 const todayFormatted = today.toISOString().split('T')[0]; // Format to 'YYYY-MM-DD'
 
 const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability => {
-    const publishedDateFormatted = vulnerability.published.split('T')[0];
+    if (!vulnerability.cve.published) {
+        return false; // Skip this entry if 'published' property is missing or null
+    }
+    const publishedDateFormatted = vulnerability.cve.published.split('T')[0];
     // Rest of the filtering logic
-    const cvssMetrics = vulnerability.metrics && Array.isArray(vulnerability.metrics.cvssMetricV31) && vulnerability.metrics.cvssMetricV31.length > 0 ? vulnerability.metrics.cvssMetricV31[0] : null;
+    const cvssMetrics = vulnerability.cve.metrics && Array.isArray(vulnerability.cve.metrics.cvssMetricV31) && vulnerability.cve.metrics.cvssMetricV31.length > 0 ? vulnerability.cve.metrics.cvssMetricV31[0] : null;
 
     if (!cvssMetrics) {
         return false;
@@ -51,9 +54,9 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
         let referencesLinks = '';
 
         // Check if the references field exists and has content
-        if (vulnerability.references) {
+        if (vulnerability.cve.references) {
             // Use regex to extract all URLs
-            const urls = vulnerability.references.match(/https?:\/\/[^\s,]+/g);
+            const urls = vulnerability.cve.references.match(/https?:\/\/[^\s,]+/g);
 
             if (urls) {
                 urls.forEach(url => {
@@ -64,10 +67,10 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
 
         content += `
             <div class="cve-entry">
-                <h2>${vulnerability.id}</h2>
-                <p><strong>Source:</strong>${vulnerability.metrics.cvssMetricV31.source}</p>
-                <p><strong>Published Date:</strong> ${vulnerability.published}</p>
-                <p><strong>Description:</strong> ${vulnerability.descriptions.value}</p>
+                <h2>${vulnerability.cve.id}</h2>
+                <p><strong>Source:</strong>${vulnerability.cve.metrics.cvssMetricV31.source}</p>
+                <p><strong>Published Date:</strong> ${vulnerability.cve.published}</p>
+                <p><strong>Description:</strong> ${vulnerability.cve.descriptions.value}</p>
                 <p><strong>References:</strong><br>${referencesLinks}</p>
             </div>
         `;
