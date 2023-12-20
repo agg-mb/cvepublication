@@ -23,8 +23,8 @@ function displayData(data) {
     today.setHours(0, 0, 0, 0); // Set to start of today
 
     const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability => {
-        const publishedDate = new Date(vulnerability.cve.published);
-        const baseScore = parseFloat(vulnerability.cve.metrics.cvssMetricV31.cvssData.baseScore);
+        const publishedDate = new Date(vulnerability.published);
+        const baseScore = parseFloat(vulnerability.metrics.cvssMetricV31.cvssData.baseScore);
         return publishedDate >= today && baseScore >= 8.0;
     });
     
@@ -43,9 +43,9 @@ function displayData(data) {
         let referencesLinks = '';
         
         // Check if the references field exists and has content
-        if (vulnerability.cve.references) {
+        if (vulnerability.references) {
             // Use regex to extract all URLs
-            const urls = vulnerability.cve.references.match(/https?:\/\/[^\s,]+/g);
+            const urls = vulnerability.references.match(/https?:\/\/[^\s,]+/g);
             
             if (urls) {
                 urls.forEach(url => {
@@ -56,10 +56,10 @@ function displayData(data) {
     
         content += `
             <div class="cve-entry">
-                <h2>${vulnerability.cve.id}</h2>
-                <p><strong>Source:</strong>${vulnerability.cve.metrics.cvssMetricV31.source}</p>
-                <p><strong>Published Date:</strong> ${vulnerability.cve.published}</p>
-                <p><strong>Description:</strong> ${vulnerability.cve.descriptions.value}</p>
+                <h2>${vulnerability.id}</h2>
+                <p><strong>Source:</strong>${vulnerability.metrics.cvssMetricV31.source}</p>
+                <p><strong>Published Date:</strong> ${vulnerability.published}</p>
+                <p><strong>Description:</strong> ${vulnerability.descriptions.value}</p>
                 <p><strong>References:</strong><br>${referencesLinks}</p>
             </div>
         `;
