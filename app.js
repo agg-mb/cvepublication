@@ -23,11 +23,20 @@ function displayData(data) {
     today.setHours(0, 0, 0, 0); // Set to start of today
 
     const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability => {
-        const publishedDate = new Date(vulnerability.published);
-        const baseScore = parseFloat(vulnerability.metrics.cvssMetricV31.cvssData.baseScore);
+        const publishedDate = new Date(vulnerability.cve.published);
+        const cvssMetrics = vulnerability.metrics.cvssMetricV31;
+
+        // Ensure cvssMetrics is defined and has at least one element
+        if (!cvssMetrics || cvssMetrics.length === 0) {
+            return false;
+        }
+
+        const baseScore = parseFloat(cvssMetrics[0].cvssData.baseScore);
+
         return publishedDate >= today && baseScore >= 8.0;
     });
-    
+
+
     // Sorting the recent vulnerabilities by published from newest to oldest
     recentVulnerabilities.sort((a, b) => {
         const dateA = new Date(a.published);
@@ -41,19 +50,19 @@ function displayData(data) {
     // Generating the content
     recentVulnerabilities.forEach(vulnerability => {
         let referencesLinks = '';
-        
+
         // Check if the references field exists and has content
         if (vulnerability.references) {
             // Use regex to extract all URLs
             const urls = vulnerability.references.match(/https?:\/\/[^\s,]+/g);
-            
+
             if (urls) {
                 urls.forEach(url => {
                     referencesLinks += `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a><br>`;
                 });
             }
         }
-    
+
         content += `
             <div class="cve-entry">
                 <h2>${vulnerability.id}</h2>
