@@ -23,7 +23,7 @@ const today = new Date();
 const todayFormatted = today.toISOString().split('T')[0]; // Format to 'YYYY-MM-DD'
 
 const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability => {
-    const publishedDateFormatted = vulnerability.cve.published.split('T')[0];
+    const publishedDateFormatted = vulnerability.published.split('T')[0];
     // Rest of the filtering logic
     const cvssMetrics = vulnerability.metrics && Array.isArray(vulnerability.metrics.cvssMetricV31) && vulnerability.metrics.cvssMetricV31.length > 0 ? vulnerability.metrics.cvssMetricV31[0] : null;
 
@@ -44,7 +44,7 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
     });
 
     const dashboard = document.getElementById('dashboard');
-    let content = `<h1>Security Vulnerabilities (baseScore >= 8.0) published on ${today}</h1>`;
+    let content = `<h1>Security Vulnerabilities (baseScore >= 8.0) published on ${todayFormatted}</h1>`;
 
     // Generating the content
     todaysHighScoreVulnerabilities.forEach(vulnerability => {
