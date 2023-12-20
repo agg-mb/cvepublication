@@ -23,19 +23,17 @@ function displayData(data) {
     today.setHours(0, 0, 0, 0); // Set to start of today
 
     const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability => {
-        const publishedDate = new Date(vulnerability.cve.published);
-        const cvssMetrics = vulnerability.metrics.cvssMetricV31;
+    const publishedDate = new Date(vulnerability.cve.published);
+    // Check if metrics and cvssMetricV31 exist and cvssMetricV31 is an array with elements
+    const cvssMetrics = vulnerability.metrics && Array.isArray(vulnerability.metrics.cvssMetricV31) && vulnerability.metrics.cvssMetricV31.length > 0 ? vulnerability.metrics.cvssMetricV31[0] : null;
 
-        // Ensure cvssMetrics is defined and has at least one element
-        if (!cvssMetrics || cvssMetrics.length === 0) {
-            return false;
-        }
+    if (!cvssMetrics) {
+        return false;
+    }
 
-        const baseScore = parseFloat(cvssMetrics[0].cvssData.baseScore);
-
-        return publishedDate >= today && baseScore >= 8.0;
+    const baseScore = parseFloat(cvssMetrics.cvssData.baseScore);
+    return publishedDate >= today && baseScore >= 8.0;
     });
-
 
     // Sorting the recent vulnerabilities by published from newest to oldest
     recentVulnerabilities.sort((a, b) => {
