@@ -43,7 +43,7 @@ function displayData(data) {
     });
 
     const dashboard = document.getElementById('dashboard');
-    let content = '<h1>Security Vulnerabilities (Score > 8.0) published on ${today}</h1>';
+    let content = `<h1>Security Vulnerabilities (baseScore >= 8.0) published on ${today}</h1>`;
 
     // Generating the content
     todaysHighScoreVulnerabilities.forEach(vulnerability => {
