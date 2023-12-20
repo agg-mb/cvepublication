@@ -47,7 +47,12 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
     });
 
     const dashboard = document.getElementById('dashboard');
-    let content = `<h1>Security Vulnerabilities (baseScore >= 8.0) published on ${todayFormatted}</h1>`;
+//    let content = `<h1>Security Vulnerabilities (baseScore >= 8.0) published on ${todayFormatted}</h1>`;
+    document.addEventListener('DOMContentLoaded', (event) => {
+    const header = document.getElementById('header');
+    let currentDate = new Date().toISOString().split('T')[0];
+    header.innerHTML = `<h1>Security Vulnerabilities (baseScore > 8.0 and published on ${currentDate})</h1>`;
+    });
 
     // Generating the content
     todaysHighScoreVulnerabilities.forEach(vulnerability => {
