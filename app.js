@@ -39,11 +39,11 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
 });
 
 
-    // Sorting the recent vulnerabilities by published from newest to oldest
+    // Sorting the vulnerabilities by baseScore from highest to lowest
     todaysHighScoreVulnerabilities.sort((a, b) => {
-        const dateA = new Date(a.published);
-        const dateB = new Date(b.published);
-        return dateB - dateA; // For descending order
+        const scoreA = a.cve.metrics.cvssMetricV31.length > 0 ? a.cve.metrics.cvssMetricV31[0].cvssData.baseScore : 0;
+        const scoreB = b.cve.metrics.cvssMetricV31.length > 0 ? b.cve.metrics.cvssMetricV31[0].cvssData.baseScore : 0;
+        return scoreB - scoreA; // For descending order
     });
 
     const dashboard = document.getElementById('dashboard');
