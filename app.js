@@ -67,6 +67,7 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
         content += `
         <div class="cve-entry">
             <h2>${vulnerability.cve.id}</h2>
+            <p><strong>Base Score:</strong>${baseScore}</p>
             <p><strong>Source:</strong>${source}</p>
             <p><strong>Published Date:</strong> ${vulnerability.cve.published}</p>
             <p><strong>Description:</strong> ${description}</p>
