@@ -19,49 +19,48 @@ fetch(DATA_FILE)
 /* Display the data */
 function displayData(data) {
     const vulnerabilitiesArray = data.vulnerabilities || [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of today
 
-    // Filtering the vulnerabilities from the last 14 days
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 14);
-    
-    const recentVulnerabilities = vulnerabilitiesArray.filter(vulnerability => {
-        const vulnerabilityDate = new Date(vulnerability.dateAdded);
-        return vulnerabilityDate >= oneWeekAgo;
+    const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability => {
+        const publishedDate = new Date(vulnerability.cve.published);
+        const baseScore = parseFloat(vulnerability.cve.metrics.cvssMetricV31.cvssData.baseScore);
+        return publishedDate >= today && baseScore >= 8.0;
     });
-
-    // Sorting the recent vulnerabilities by dateAdded from newest to oldest
+    
+    // Sorting the recent vulnerabilities by published from newest to oldest
     recentVulnerabilities.sort((a, b) => {
-        const dateA = new Date(a.dateAdded);
-        const dateB = new Date(b.dateAdded);
+        const dateA = new Date(a.published);
+        const dateB = new Date(b.published);
         return dateB - dateA; // For descending order
     });
 
     const dashboard = document.getElementById('dashboard');
-    let content = '<h1>Known Exploited CVEs from Last 14 Days</h1>';
+    let content = '<h1>Security Vulnerabilities (Score > 8.0) published on ${currentDate}</h1>';
 
     // Generating the content
     recentVulnerabilities.forEach(vulnerability => {
-        let notesLinks = '';
+        let referencesLinks = '';
         
-        // Check if the notes field exists and has content
-        if (vulnerability.notes) {
+        // Check if the references field exists and has content
+        if (vulnerability.cve.references) {
             // Use regex to extract all URLs
-            const urls = vulnerability.notes.match(/https?:\/\/[^\s,]+/g);
+            const urls = vulnerability.cve.references.match(/https?:\/\/[^\s,]+/g);
             
             if (urls) {
                 urls.forEach(url => {
-                    notesLinks += `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a><br>`;
+                    referencesLinks += `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a><br>`;
                 });
             }
         }
     
         content += `
             <div class="cve-entry">
-                <h2>${vulnerability.cveID}</h2>
-                <p><strong>Vendor:</strong> ${vulnerability.vendorProject}</p>
-                <p><strong>Published Date:</strong> ${vulnerability['dateAdded']}</p>
-                <p><strong>Description:</strong> ${vulnerability.shortDescription}</p>
-                <p><strong>Notes:</strong><br>${notesLinks}</p>
+                <h2>${vulnerability.cve.id}</h2>
+                <p><strong>Source:</strong>${vulnerability.cve.metrics.cvssMetricV31.source}</p>
+                <p><strong>Published Date:</strong> ${vulnerability.cve.published}</p>
+                <p><strong>Description:</strong> ${vulnerability.cve.descriptions.value}</p>
+                <p><strong>References:</strong><br>${referencesLinks}</p>
             </div>
         `;
     });
