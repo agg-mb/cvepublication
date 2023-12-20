@@ -52,19 +52,16 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
     // Generating the content
     todaysHighScoreVulnerabilities.forEach(vulnerability => {
         let referencesLinks = '';
-
+    
         // Check if the references field exists and has content
-        if (vulnerability.cve.references) {
-            // Use regex to extract all URLs
-            const urls = vulnerability.cve.references.match(/https?:\/\/[^\s,]+/g);
-
-            if (urls) {
-                urls.forEach(url => {
-                    referencesLinks += `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a><br>`;
-                });
-            }
+        if (vulnerability.cve.references && vulnerability.cve.references.length > 0) {
+            vulnerability.cve.references.forEach(reference => {
+                if (reference.url) {
+                    referencesLinks += `<a href="${reference.url}" target="_blank" rel="noopener noreferrer">${reference.url}</a><br>`;
+                }
+            });
         }
-
+    
         content += `
             <div class="cve-entry">
                 <h2>${vulnerability.cve.id}</h2>
