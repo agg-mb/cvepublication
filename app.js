@@ -25,7 +25,7 @@ const todayFormatted = today.toISOString().split('T')[0]; // Format to 'YYYY-MM-
 const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability => {
     const publishedDateFormatted = vulnerability.cve.published.split('T')[0];
     // Rest of the filtering logic
-    const cvssMetrics = // ... existing code ...
+    const cvssMetrics = vulnerability.metrics && Array.isArray(vulnerability.metrics.cvssMetricV31) && vulnerability.metrics.cvssMetricV31.length > 0 ? vulnerability.metrics.cvssMetricV31[0] : null;
 
     if (!cvssMetrics) {
         return false;
