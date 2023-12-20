@@ -18,22 +18,23 @@ fetch(DATA_FILE)
 
 /* Display the data */
 function displayData(data) {
-    const vulnerabilitiesArray = data.vulnerabilities || [];
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set to start of today
+const vulnerabilitiesArray = data.vulnerabilities || [];
+const today = new Date();
+const todayFormatted = today.toISOString().split('T')[0]; // Format to 'YYYY-MM-DD'
 
-    const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability => {
-    const publishedDate = new Date(vulnerability.cve.published);
-    // Check if metrics and cvssMetricV31 exist and cvssMetricV31 is an array with elements
-    const cvssMetrics = vulnerability.metrics && Array.isArray(vulnerability.metrics.cvssMetricV31) && vulnerability.metrics.cvssMetricV31.length > 0 ? vulnerability.metrics.cvssMetricV31[0] : null;
+const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability => {
+    const publishedDateFormatted = vulnerability.cve.published.split('T')[0];
+    // Rest of the filtering logic
+    const cvssMetrics = // ... existing code ...
 
     if (!cvssMetrics) {
         return false;
     }
 
     const baseScore = parseFloat(cvssMetrics.cvssData.baseScore);
-    return publishedDate >= today && baseScore >= 8.0;
-    });
+    return publishedDateFormatted === todayFormatted && baseScore >= 8.0;
+});
+
 
     // Sorting the recent vulnerabilities by published from newest to oldest
     todaysHighScoreVulnerabilities.sort((a, b) => {
