@@ -36,7 +36,7 @@ function displayData(data) {
     });
 
     // Sorting the recent vulnerabilities by published from newest to oldest
-    recentVulnerabilities.sort((a, b) => {
+    todaysHighScoreVulnerabilities.sort((a, b) => {
         const dateA = new Date(a.published);
         const dateB = new Date(b.published);
         return dateB - dateA; // For descending order
@@ -46,7 +46,7 @@ function displayData(data) {
     let content = '<h1>Security Vulnerabilities (Score > 8.0) published on ${currentDate}</h1>';
 
     // Generating the content
-    recentVulnerabilities.forEach(vulnerability => {
+    todaysHighScoreVulnerabilities.forEach(vulnerability => {
         let referencesLinks = '';
 
         // Check if the references field exists and has content
