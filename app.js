@@ -58,7 +58,8 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
         let description = (vulnerability.cve.descriptions.length > 0) ? vulnerability.cve.descriptions[0].value : "No description available";
         let source = (vulnerability.cve.metrics.cvssMetricV31.length > 0) ? vulnerability.cve.metrics.cvssMetricV31[0].source : "No source available";
         let baseScore = (vulnerability.cve.metrics.cvssMetricV31.length > 0) ? vulnerability.cve.metrics.cvssMetricV31[0].cvssData.baseScore : "No score available";
-
+        let publishedDate = vulnerability.cve.published.split('T')[0];
+        
         // Check if the references field exists and has content
         if (vulnerability.cve.references && vulnerability.cve.references.length > 0) {
             vulnerability.cve.references.forEach(reference => {
@@ -73,7 +74,7 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
             <h2>${vulnerability.cve.id}</h2>
             <p><strong>Base Score:</strong> ${baseScore}</p>
             <p><strong>Source:</strong> ${source}</p>
-            <p><strong>Published Date:</strong> ${vulnerability.cve.published}</p>
+            <p><strong>Published Date:</strong> ${publishedDate}</p>
             <p><strong>Description:</strong> ${description}</p>
             <p><strong>References:</strong><br>${referencesLinks}</p>
         </div>
