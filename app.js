@@ -27,7 +27,7 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
     if (!vulnerability.cve.published) {
         return false; // Skip this entry if 'published' property is missing or null
     }
-    const publishedDateFormatted = vulnerability.cve.published.split('T')[0];
+    const publishedDate = new Date(vulnerability.cve.published);
     // Filtering for the last 24 hours and baseScore >= 8.0
     const cvssMetrics = vulnerability.cve.metrics && Array.isArray(vulnerability.cve.metrics.cvssMetricV31) && vulnerability.cve.metrics.cvssMetricV31.length > 0 ? vulnerability.cve.metrics.cvssMetricV31[0] : null;
 
