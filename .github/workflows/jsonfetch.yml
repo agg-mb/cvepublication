@@ -2,7 +2,7 @@ name: Update JSON Data
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Runs every hour
+    - cron: '*/5 * * * *'  # Runs every 5 minutes
 
 jobs:
   fetch-and-commit:
@@ -14,10 +14,9 @@ jobs:
 
     - name: Fetch JSON data
       run: |
-        # Getting current date in the format YYYY-MM-DD
+        # Getting current date and the date from 2 days ago in the format YYYY-MM-DD
         CURRENT_DATE=$(date -u +"%Y-%m-%d")
-        # Setting start and end date for the URL
-        START_DATE="${CURRENT_DATE}T00:00:00.000"
+        START_DATE=$(date -u -d "2 days ago" +"%Y-%m-%d")T00:00:00.000
         END_DATE="${CURRENT_DATE}T23:59:59.999"
         # Fetching data with updated URL
         curl -o data.json "https://services.nvd.nist.gov/rest/json/cves/2.0/?pubStartDate=${START_DATE}&pubEndDate=${END_DATE}"
