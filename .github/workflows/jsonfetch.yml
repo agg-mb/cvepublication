@@ -24,14 +24,13 @@ jobs:
         # Extracting CVE IDs
         CVE_IDS=$(jq -r '.vulnerabilities[].cve.id' data.json)
 
-        # Fetching vendor information for each CVE and updating data.json
+ # Fetching vendor information for each CVE and updating data.json
         for CVE_ID in $CVE_IDS; do
           # Fetching vendor data
           VENDOR_RESPONSE=$(curl -s -u "agg-mb:;Kp'L\p*w#'r[9'C" "https://www.opencve.io/api/cve/$CVE_ID")
-          VENDOR_STATUS=$(echo $VENDOR_RESPONSE | jq -r '.vendors | keys[]?')
-
-          # Check if vendor data is present and update data.json
-          if [ ! -z "$VENDOR_STATUS" ]; then
+          
+          # Check if vendors data is not null and has keys
+          if [ "$(echo $VENDOR_RESPONSE | jq '.vendors != null and .vendors | has(0)')" = "true" ]; then
             VENDOR_NAME=$(echo $VENDOR_RESPONSE | jq -r '.vendors | keys[]')
             jq --arg CVE_ID "$CVE_ID" --arg VENDOR_NAME "$VENDOR_NAME" '(.vulnerabilities[] | select(.cve.id == $CVE_ID) | .vendor) |= $VENDOR_NAME' data.json > temp.json && mv temp.json data.json
           fi
