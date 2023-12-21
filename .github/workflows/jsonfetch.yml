@@ -14,27 +14,27 @@ jobs:
 
     - name: Fetch JSON data
       run: |
-        # Getting current date and the date from 2 days ago in the format YYYY-MM-DD
+       # Getting current date and the date from 2 days ago in the format YYYY-MM-DD
         CURRENT_DATE=$(date -u +"%Y-%m-%d")
         START_DATE=$(date -u -d "2 days ago" +"%Y-%m-%d")T00:00:00.000
         END_DATE="${CURRENT_DATE}T23:59:59.999"
-        # Fetching data with updated URL
+       # Fetching data with updated URL
         curl -o data.json "https://services.nvd.nist.gov/rest/json/cves/2.0/?pubStartDate=${START_DATE}&pubEndDate=${END_DATE}"
 
-        # Extracting CVE IDs
+       # Extracting CVE IDs
         CVE_IDS=$(jq -r '.vulnerabilities[].cve.id' data.json)
 
- # Fetching vendor information for each CVE and updating data.json
+       # Fetching vendor information for each CVE and updating data.json
         for CVE_ID in $CVE_IDS; do
           # Fetching vendor data
           VENDOR_RESPONSE=$(curl -s -u "agg-mb:;Kp'L\p*w#'r[9'C" "https://www.opencve.io/api/cve/$CVE_ID")
           
-          # Check if vendors data is not null and has keys
+       # Check if vendors data is not null and has keys
           if [ "$(echo $VENDOR_RESPONSE | jq '.vendors != null and .vendors | has(0)')" = "true" ]; then
             VENDOR_NAME=$(echo $VENDOR_RESPONSE | jq -r '.vendors | keys[]')
             jq --arg CVE_ID "$CVE_ID" --arg VENDOR_NAME "$VENDOR_NAME" '(.vulnerabilities[] | select(.cve.id == $CVE_ID) | .vendor) |= $VENDOR_NAME' data.json > temp.json && mv temp.json data.json
           fi
-        done
+       done
 
     - name: Commit and push if there are changes
       run: |
