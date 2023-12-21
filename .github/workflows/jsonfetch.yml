@@ -27,7 +27,7 @@ jobs:
        # Fetching vendor information for each CVE and updating data.json
         for CVE_ID in $CVE_IDS; do
           # Fetching vendor data
-          VENDOR_RESPONSE=$(curl -s -u "agg-mb:;Kp'L\p*w#'r[9'C" "https://www.opencve.io/api/cve/$CVE_ID")
+          VENDOR_RESPONSE=$(curl -s -u '${{ secrets.OPENCVE_USERNAME }}:${{ secrets.OPENCVE_PASSWORD }}' 'https://www.opencve.io/api/cve/$CVE_ID')
           
        # Check if vendors data is not null and has keys
           if [ "$(echo $VENDOR_RESPONSE | jq '.vendors != null and .vendors | has(0)')" = "true" ]; then
