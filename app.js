@@ -19,15 +19,16 @@ fetch(DATA_FILE)
 /* Display the data */
 function displayData(data) {
 const vulnerabilitiesArray = data.vulnerabilities || [];
-const today = new Date();
-const todayFormatted = today.toISOString().split('T')[0]; // Format to 'YYYY-MM-DD'
+const now = new Date();
+const twentyFourHoursAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+
 
 const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability => {
     if (!vulnerability.cve.published) {
         return false; // Skip this entry if 'published' property is missing or null
     }
     const publishedDateFormatted = vulnerability.cve.published.split('T')[0];
-    // Rest of the filtering logic
+    // Filtering for the last 24 hours and baseScore >= 8.0
     const cvssMetrics = vulnerability.cve.metrics && Array.isArray(vulnerability.cve.metrics.cvssMetricV31) && vulnerability.cve.metrics.cvssMetricV31.length > 0 ? vulnerability.cve.metrics.cvssMetricV31[0] : null;
 
     if (!cvssMetrics) {
@@ -35,7 +36,7 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
     }
 
     const baseScore = parseFloat(cvssMetrics.cvssData.baseScore);
-    return publishedDateFormatted === todayFormatted && baseScore >= 8.0;
+    return publishedDate >= twentyFourHoursAgo && baseScore >= 8.0;
 });
 
 
