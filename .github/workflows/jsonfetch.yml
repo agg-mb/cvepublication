@@ -9,9 +9,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Run jq
-      uses: sergeysova/jq-action@v2
-            
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
     - name: Fetch JSON data
       run: |
@@ -28,11 +27,14 @@ jobs:
         # Fetching vendor information for each CVE and updating data.json
         for CVE_ID in $CVE_IDS; do
           # Fetching vendor data
-          VENDOR_DATA=$(curl -u 'agg-mb:q,q\9$@[xp=xRN!"' "https://www.opencve.io/api/cve/$CVE_ID")
-          # Extracting vendor name
-          VENDOR_NAME=$(echo $VENDOR_DATA | jq -r '.vendors | keys[]')
-          # Updating data.json with vendor information
-          jq --arg CVE_ID "$CVE_ID" --arg VENDOR_NAME "$VENDOR_NAME" '(.vulnerabilities[] | select(.cve.id == $CVE_ID) | .vendor) |= $VENDOR_NAME' data.json > temp.json && mv temp.json data.json
+          VENDOR_RESPONSE=$(curl -s -u 'agg-mb:5,}h:\p~;*";5Y;+' "https://www.opencve.io/api/cve/$CVE_ID")
+          VENDOR_STATUS=$(echo $VENDOR_RESPONSE | jq -r '.vendors | keys[]?')
+
+          # Check if vendor data is present and update data.json
+          if [ ! -z "$VENDOR_STATUS" ]; then
+            VENDOR_NAME=$(echo $VENDOR_RESPONSE | jq -r '.vendors | keys[]')
+            jq --arg CVE_ID "$CVE_ID" --arg VENDOR_NAME "$VENDOR_NAME" '(.vulnerabilities[] | select(.cve.id == $CVE_ID) | .vendor) |= $VENDOR_NAME' data.json > temp.json && mv temp.json data.json
+          fi
         done
 
     - name: Commit and push if there are changes
