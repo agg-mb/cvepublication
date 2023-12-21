@@ -102,3 +102,9 @@ function autoScroll() {
 }
 
 setInterval(autoScroll, 100); // Adjust interval for faster or slower scroll
+
+function refreshPage() {
+    window.location.reload();
+}
+
+setTimeout(refreshPage, 900000); // 900000 milliseconds = 15 minutes
