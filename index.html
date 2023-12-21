@@ -4,11 +4,11 @@
     <link rel="stylesheet" href="styles.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Security Vulnerabilities (baseScore > 8.0 and published today)</title>
+    <title>Security Vulnerabilities (baseScore > 8.0 and published within 24 hours)</title>
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
-            let currentDate = new Date().toISOString().split('T')[0];
-            document.title = `Security Vulnerabilities (baseScore > 8.0 and published on ${currentDate})`;
+            //let currentDate = new Date().toISOString().split('T')[0];
+            document.title = `Security Vulnerabilities (baseScore >= 5.0 and published within the last 24 hours)`;
         });
     </script>
 </head>
