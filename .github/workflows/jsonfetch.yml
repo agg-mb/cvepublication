@@ -9,8 +9,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    - name: Run jq
+      uses: sergeysova/jq-action@v2
+            
 
     - name: Fetch JSON data
       run: |
@@ -21,13 +22,26 @@ jobs:
         # Fetching data with updated URL
         curl -o data.json "https://services.nvd.nist.gov/rest/json/cves/2.0/?pubStartDate=${START_DATE}&pubEndDate=${END_DATE}"
 
+        # Extracting CVE IDs
+        CVE_IDS=$(jq -r '.vulnerabilities[].cve.id' data.json)
+
+        # Fetching vendor information for each CVE and updating data.json
+        for CVE_ID in $CVE_IDS; do
+          # Fetching vendor data
+          VENDOR_DATA=$(curl -u 'agg-mb:q,q\9$@[xp=xRN!"' "https://www.opencve.io/api/cve/$CVE_ID")
+          # Extracting vendor name
+          VENDOR_NAME=$(echo $VENDOR_DATA | jq -r '.vendors | keys[]')
+          # Updating data.json with vendor information
+          jq --arg CVE_ID "$CVE_ID" --arg VENDOR_NAME "$VENDOR_NAME" '(.vulnerabilities[] | select(.cve.id == $CVE_ID) | .vendor) |= $VENDOR_NAME' data.json > temp.json && mv temp.json data.json
+        done
+
     - name: Commit and push if there are changes
       run: |
         git config --global user.name 'GitHub Action'
         git config --global user.email 'action@github.com'
         git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/agg-mb/cvepublication.git
         git add -A
-        git diff --quiet && git diff --staged --quiet || git commit -m "Updated JSON data"
+        git diff --quiet && git diff --staged --quiet || git commit -m "Updated JSON data with vendor info"
         git push
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
