@@ -34,7 +34,7 @@ jobs:
             VENDOR_NAME=$(echo $VENDOR_RESPONSE | jq -r '.vendors | keys[]')
             jq --arg CVE_ID "$CVE_ID" --arg VENDOR_NAME "$VENDOR_NAME" '(.vulnerabilities[] | select(.cve.id == $CVE_ID) | .vendor) |= $VENDOR_NAME' data.json > temp.json && mv temp.json data.json
           fi
-       done
+        done
 
     - name: Commit and push if there are changes
       run: |
