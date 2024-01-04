@@ -50,7 +50,7 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
     });
 
     const dashboard = document.getElementById('dashboard');
-    let content = `<h1>Security Vulnerabilities (baseScore >= 5.0) published since 24 hours ago</h1>`;
+    let content = '';
 
     // Generating the content
     todaysHighScoreVulnerabilities.forEach(vulnerability => {
