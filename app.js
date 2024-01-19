@@ -56,7 +56,7 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
         temp.innerHTML = str;
     
         // Allowable tags and attributes
-        var safe_tags = ['a', 'b', 'i', 'em', 'strong', 'p', 'ul', 'li', 'h1', 'h2', 'h3', 'br', 'span'];
+        var safe_tags = ['a', 'b', 'i', 'em', 'strong', 'p', 'ul', 'li', 'h1', 'h2', 'h3', 'br', 'span', 'div'];
         var safe_attrs = ['href', 'title', 'style', 'target', 'rel'];
     
         // Remove script tags and event handlers
