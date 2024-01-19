@@ -96,7 +96,7 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
         </div>
         `;
     });
-    dashboard.textContent = content;
+    dashboard.innerHTML = sanitizeHTML(content);
 }
 
 /* Automatically scrolling */
