@@ -50,6 +50,21 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
     });
 
     const dashboard = document.getElementById('dashboard');
+
+    function sanitizeHTML(str) {
+        var temp = document.createElement('div');
+        // Remove script tags and other potentially dangerous elements
+        temp.textContent = str;
+        var sanitized = temp.innerHTML;
+        sanitized = sanitized.replace(/<script.*?>.*?<\/script>/gi, '');
+        sanitized = sanitized.replace(/<.*?javascript:.*?>/gi, '');
+        sanitized = sanitized.replace(/<.*?\bon\w+.*?>/gi, '');
+        sanitized = sanitized.replace(/<\/?iframe.*?>/gi, '');
+        sanitized = sanitized.replace(/<\/?link.*?>/gi, '');
+        sanitized = sanitized.replace(/<\/?meta.*?>/gi, '');
+        return sanitized;
+    }
+    
     let content = '';
 
     // Generating the content
@@ -81,7 +96,7 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
         </div>
         `;
     });
-    dashboard.textContent = content;
+    dashboard.innerHTML = content;
 }
 
 /* Automatically scrolling */
