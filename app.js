@@ -30,7 +30,7 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
     }
     const publishedDateFormatted = vulnerability.cve.published.split('T')[0];
     
-    // Filtering for the last 24 hours and baseScore >= 5.0
+    // Filtering for the last 24 hours and baseScore >= 8.0
     const cvssMetrics = vulnerability.cve.metrics && Array.isArray(vulnerability.cve.metrics.cvssMetricV31) && vulnerability.cve.metrics.cvssMetricV31.length > 0 ? vulnerability.cve.metrics.cvssMetricV31[0] : null;
 
     if (!cvssMetrics) {
@@ -38,7 +38,7 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
     }
 
     const baseScore = parseFloat(cvssMetrics.cvssData.baseScore);
-    return publishedDateFormatted >= twentyFourHoursAgoFormatted && baseScore >= 5.0;
+    return publishedDateFormatted >= twentyFourHoursAgoFormatted && baseScore >= 8.0;
 });
 
 
