@@ -81,11 +81,13 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
     // Generating the content
     todaysHighScoreVulnerabilities.forEach(vulnerability => {
         let referencesLinks = '';
-        let description = (vulnerability.cve.descriptions.length > 0) ? vulnerability.cve.descriptions[0].value : "No description available";
+        let description = vulnerability.cve.descriptions.length > 0
+            ? escapeHtml(vulnerability.cve.descriptions[0].value)
+            : "No description available";
         //let source = (vulnerability.cve.metrics.cvssMetricV31.length > 0) ? vulnerability.cve.metrics.cvssMetricV31[0].source : "No source available";
         let baseScore = (vulnerability.cve.metrics.cvssMetricV31.length > 0) ? vulnerability.cve.metrics.cvssMetricV31[0].cvssData.baseScore : "No score available";
         let publishedDate = vulnerability.cve.published.split('T')[0];
-        let vendor = vulnerability.vendor || "Vendor information not available";
+        let vendor = escapeHtml(vulnerability.vendor || "Vendor information not available");
         
         // Check if the references field exists and has content
         if (vulnerability.cve.references && vulnerability.cve.references.length > 0) {
@@ -98,7 +100,7 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
     
         content += `
         <div class="cve-entry">
-            <h2>${vulnerability.cve.id}</h2>
+            <h2>${escapeHtml(vulnerability.cve.id)}</h2>
             <p><strong>Base Score:</strong> ${baseScore}</p>
             <p><strong>Vendor:</strong> ${vendor}</p>
             <p><strong>Published Date:</strong> ${publishedDate}</p>
@@ -133,6 +135,16 @@ setInterval(autoScroll, 100); // Adjust interval for faster or slower scroll
 
 function refreshPage() {
     window.location.reload();
+}
+
+// Escape funktion for HTML strings
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 setTimeout(refreshPage, 900000); // 900000 milliseconds = 15 minutes
