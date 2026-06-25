@@ -51,6 +51,7 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
 
     const dashboard = document.getElementById('dashboard');
 
+    // DEPRECATED; replaced with escapeHtml()
     function sanitizeHTML(str) {
         var temp = document.createElement('div');
         temp.innerHTML = str;
@@ -85,15 +86,17 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
             ? escapeHtml(vulnerability.cve.descriptions[0].value)
             : "No description available";
         //let source = (vulnerability.cve.metrics.cvssMetricV31.length > 0) ? vulnerability.cve.metrics.cvssMetricV31[0].source : "No source available";
-        let baseScore = (vulnerability.cve.metrics.cvssMetricV31.length > 0) ? vulnerability.cve.metrics.cvssMetricV31[0].cvssData.baseScore : "No score available";
-        let publishedDate = vulnerability.cve.published.split('T')[0];
+        let baseScore = escapeHtml((vulnerability.cve.metrics.cvssMetricV31.length > 0) ? vulnerability.cve.metrics.cvssMetricV31[0].cvssData.baseScore : "No score available");
+        let publishedDate = escapeHtml(vulnerability.cve.published.split('T')[0]);
+
         let vendor = escapeHtml(vulnerability.vendor || "Vendor information not available");
         
         // Check if the references field exists and has content
         if (vulnerability.cve.references && vulnerability.cve.references.length > 0) {
             vulnerability.cve.references.forEach(reference => {
                 if (reference.url) {
-                    referencesLinks += `<a href="${reference.url}" target="_blank" rel="noopener noreferrer">${reference.url}</a><br>`;
+                    const safeUrl = escapeHtml(reference.url);
+                    referencesLinks += `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeUrl}</a><br>`;
                 }
             });
         }
@@ -109,7 +112,7 @@ const todaysHighScoreVulnerabilities = vulnerabilitiesArray.filter(vulnerability
         </div>
         `;
     });
-    dashboard.innerHTML = sanitizeHTML(content);
+    dashboard.innerHTML = content;
 }
 
 /* Automatically scrolling */
