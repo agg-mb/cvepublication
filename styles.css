@@ -1,6 +1,6 @@
 /* Scrolling */
 #dashboard {
-    height: 100vh;  /* Adjust to your desired viewport height */
+    height: 100dvh;  /* Adjust to your desired viewport height */
     overflow: auto;
 }
 
